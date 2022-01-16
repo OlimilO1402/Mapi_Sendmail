@@ -1,12 +1,12 @@
 VERSION 5.00
-Begin VB.Form FrmEmail 
-   Caption         =   "Form1"
+Begin VB.Form FMain 
+   Caption         =   "FMain"
    ClientHeight    =   5535
    ClientLeft      =   120
    ClientTop       =   465
    ClientWidth     =   8415
-   Icon            =   "Form1.frx":0000
-   LinkTopic       =   "Form1"
+   Icon            =   "FMain.frx":0000
+   LinkTopic       =   "FMain"
    ScaleHeight     =   5535
    ScaleWidth      =   8415
    StartUpPosition =   3  'Windows-Standard
@@ -38,9 +38,9 @@ Begin VB.Form FrmEmail
    End
    Begin VB.ListBox LBFiles 
       Height          =   2010
-      ItemData        =   "Form1.frx":1782
+      ItemData        =   "FMain.frx":1782
       Left            =   4800
-      List            =   "Form1.frx":1784
+      List            =   "FMain.frx":1784
       OLEDragMode     =   1  'Automatisch
       OLEDropMode     =   1  'Manuell
       TabIndex        =   1
@@ -126,7 +126,7 @@ Begin VB.Form FrmEmail
       Width           =   495
    End
 End
-Attribute VB_Name = "FrmEmail"
+Attribute VB_Name = "FMain"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
@@ -135,8 +135,10 @@ Option Explicit
 Private m_Email As StdMail
 
 Private Sub Form_Load()
+    Me.Caption = "MAPI Sendmail" & " v" & App.Major & "." & App.Minor & "." & App.Revision
     Set m_Email = New StdMail
 End Sub
+
 Private Sub Form_Resize()
     Dim L As Single, T As Single, W As Single, H As Single
     L = LBFiles.Left: W = Me.ScaleWidth - L: H = LBFiles.Height
@@ -154,33 +156,30 @@ Private Sub BtnFillTestEmail_Click()
     LBFiles.AddItem App.Path & "\Resources\Test2.pdf"
 End Sub
 
-'Private Sub Command4_Click()
-'    Debug.Print GetHtmlEmail.ToHtmlStr
-'End Sub
-
 Private Sub BtnEmailStart_Click()
     Set m_Email = New StdMail
     With m_Email
         .IsUnicode = True
         .RecipientAddTo TxtRecpTo.Text
         .RecipientAddCC TxtRecpCC.Text
-        .Subject = TxtSubject.Text '"Hello for Test"
-        .BodyText = TxtBodyText.Text 'GetHtmlEmail.ToHtmlStr
+        .Subject = TxtSubject.Text
+        .BodyText = TxtBodyText.Text
         Dim i As Long
         For i = 0 To LBFiles.ListCount - 1
             .FileAdd LBFiles.List(i)
         Next
-        '.FileAdd App.Path & "\Resources\Test1.pdf"
-        '.FileAdd App.Path & "\Resources\Test2.pdf"
     End With
     m_Email.Start
 End Sub
+
 Private Function AddRecipientsTo(TB As TextBox, eml As StdMail)
     '
 End Function
+
 Private Sub BtnEmailLogin_Click()
     m_Email.Login "XXXXXXXXXXXXXXXXXXXX", "XXXXXXXXXXXXXXXXXXXX"
 End Sub
+
 Private Sub LBFiles_OLEDragDrop(Data As DataObject, Effect As Long, Button As Integer, Shift As Integer, X As Single, Y As Single)
     If Data.GetFormat(vbCFFiles) Then
         Dim f
@@ -189,6 +188,7 @@ Private Sub LBFiles_OLEDragDrop(Data As DataObject, Effect As Long, Button As In
         Next
     End If
 End Sub
+
 Function GetFileName(ByVal aPFN As String) As String
     Dim pos As Long: pos = InStrRev(aPFN, "\")
     If pos = 0 Then GetFileName = aPFN: Exit Function
@@ -200,6 +200,7 @@ Private Sub TxtRecpTo_LostFocus()
     'soll man direkt in die Email schreiben, ja wegen SessionID muss man direkt in die Email schreiben
     'd.h
 End Sub
+
 Public Function getHTMLText() As String
     Dim s As String: s = ""
     s = s & "<html>" & vbCrLf
@@ -252,7 +253,6 @@ Public Function getHTMLText() As String
     getHTMLText = s
 End Function
 
-
 Public Function GetHtmlEmail() As HtmlElem
     Dim html As HtmlElem
     Set html = New_HtmlElem("html")
@@ -302,6 +302,7 @@ Public Function GetHtmlEmail() As HtmlElem
     End With
     Set GetHtmlEmail = html
 End Function
+
 'Sub MapiSimpleSendMail(Files() As String, ToEmailAddress As String, toName As String)
 '
 '    Dim aMAPIMessage As MAPIMessage

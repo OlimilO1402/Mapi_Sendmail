@@ -2,7 +2,7 @@ Attribute VB_Name = "MNew"
 Option Explicit
 
 Sub Main()
-    FrmEmail.Show
+    FMain.Show
 End Sub
 
 Public Function New_HtmlElem(aName As String) As HtmlElem
